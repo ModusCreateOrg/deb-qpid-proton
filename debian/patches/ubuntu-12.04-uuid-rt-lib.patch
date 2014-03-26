@@ -1,0 +1,42 @@
+Description: Patch to get this to compile and link on Ubuntu 12.04
+ Ugly workaround to get get uuid and rt linking on Ubuntu 12.04. 
+ 
+ For some reason the checks to see whether it has to link to these 
+ libraries are not kicking in properly.
+ .
+ qpid-proton (0.6-5) UNRELEASED; urgency=low
+ .
+   * Add multi-arch support.
+Author: Mo McRoberts <mo.mcroberts@bbc.co.uk>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: http://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+--- qpid-proton-0.6.orig/proton-c/CMakeLists.txt
++++ qpid-proton-0.6/proton-c/CMakeLists.txt
+@@ -105,6 +105,7 @@ else (CLOCK_GETTIME_IN_LIBC)
+     endif (WINDOWS_FILETIME)
+   endif (CLOCK_GETTIME_IN_RT)
+ endif (CLOCK_GETTIME_IN_LIBC)
++set (TIME_LIB rt)
+ 
+ CHECK_SYMBOL_EXISTS(uuid_generate "uuid/uuid.h" UUID_GENERATE_IN_LIBC)
+ if (UUID_GENERATE_IN_LIBC)
+@@ -128,6 +129,7 @@ else (UUID_GENERATE_IN_LIBC)
+     endif (UUID_CREATE_IN_LIBC)
+   endif (UUID_GENERATE_IN_UUID)
+ endif (UUID_GENERATE_IN_LIBC)
++set (UUID_LIB uuid)
+ 
+ if (PN_WINAPI)
+   CHECK_SYMBOL_EXISTS(strerror_s "string.h" STRERROR_S_IN_WINAPI)
